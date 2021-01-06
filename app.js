@@ -1,5 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
+
 const hash = require('./hash.js');
 const { createDigest } = require('./hash.js');
 const { getHashes } = require('crypto');
@@ -8,7 +10,8 @@ require('dotenv').config();
 const app = express();
 
 //install the middleware
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use(cors());
 
 //Serving the homepage
 app.get('/', (req, res) => {
@@ -17,6 +20,7 @@ app.get('/', (req, res) => {
 
 //An endpoint for hashing
 app.post('/api/createHash', (req, res) => {
+    console.log("Received request");
     let input = req.body.input;
 
     let hashAlgo = req.body.hashAlgo
@@ -45,6 +49,11 @@ app.get('/api/checkHashes', (req, res) => {
     res.json({
         "Algorithms": getHashes()
     })
+})
+
+app.get('/api/test', (req, res)=> {
+    console.log("test");
+    res.send("test");
 })
 
 app.listen(process.env.PORT, () =>{
